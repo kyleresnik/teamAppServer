@@ -36,24 +36,24 @@ router.post('/signin', function(req, res){
   User.findOne( { where: { username: req.body.user.username } } ).then(
     function(user) {
       if (user) {
-        bcrypt.compare(req.body.user.password, user.passwordhash, function (err, matches) {
+        bcrypt.compare(req.body.user.password, user.password, function (err, matches) {
           if (matches) {
             var token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24 });
             res.json({
               user: user,
-              message: "Successfully authenticated!",
+              message: "Successfully Authenticated!",
               sessionToken: token
             });
           } else {
-            res.status(502).send({ error: "Authentication failed" });
+            res.status(502).send({ error: "Authentication Failed" });
           }
         });
       } else {
-        res.status(500).send({ error: "Failed to authenticate" });
+        res.status(500).send({ error: "Internal Server Error" });
       }
     },
     function(err) {
-      res.status(501).send({ error: "you failed, yo" });
+      res.status(501).send({ error: "Not Implemented" });
     }
   );
 });
