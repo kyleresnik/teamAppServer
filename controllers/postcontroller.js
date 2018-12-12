@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Post = require('../db').import('../models/post')
+// Post.sync({force: true})
 
 router.get('/getall', (req, res) => {
     Post.findAll()
@@ -16,10 +17,9 @@ router.get('/:id', (req, res) => {
 router.post('/newthread', (req, res) => {
     if (!req.errors) {
         const postFromRequest = {
-            owner_id: req.body.post.owner_id,
-            owner_username: req.body.post.owner_username,
+            userId: req.user.id,
             text: req.body.post.text,
-            title: req.body.post.title,
+            title: req.body.post.title
         }; 
         Post.create(postFromRequest)
             .then(post => res.status(200).json(post))

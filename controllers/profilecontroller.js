@@ -16,11 +16,10 @@ router.get('/:id', (req, res) => {
 router.post('/newprofile', (req, res) => {
     if (!req.errors) {
         const profileFromRequest = {
-         owner_id: req.body.profile.owner_id,
-         owner_username: req.body.profile.owner_username,
-         owner_firstName: req.body.profile.owner_firstName,
-         owner_lastName: req.body.profile.owner_lastName,
-         bio: req.body.profile.bio
+         bio: req.body.profile.bio,
+         twHandle: req.body.profile.twHandle,
+         fbUrl: req.body.profile.fbUrl,
+         ownerId: req.body.profile.userId
         }; 
         Profile.create(profileFromRequest)
             .then(profile => res.status(200).json(profile))

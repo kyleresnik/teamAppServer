@@ -1,21 +1,32 @@
-module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('user' , {
+module.exports = (sequelize, DataTypes) => {
+    const User = sequelize.define('user' , {
         firstName: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         lastName: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         username: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: true,
+            unique: true
         },
         password: {
             type: DataTypes.STRING,
-            allowNull: false,
+            validate: {
+                len: {
+                    args:5,
+                    msg: "Password must be a minimum of 5 characters"
+                }
+            }
         }
     });
+
+    User.associate = models => {
+        User.hasMany(models['post'])
+    }
+
+    return User;
 };

@@ -1,26 +1,18 @@
 module.exports = function(sequelize, DataTypes) {
-    return sequelize.define('profile' , {
-        owner_id: {
-            type: DataTypes.INTEGER,
-        },
-        owner_username: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        owner_firstName: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        owner_lastName: {
-            type: DataTypes.STRING,
-            allowNull: false
+    const Profile = sequelize.define('profile' , {
+        userId: {
+            type: DataTypes.INTEGER
         },
         bio: {
             type: DataTypes.STRING
         },
-
-        // image: {
-        //     type: DataTypes.BLOB
-        // }
+        twHandle: {
+            type: DataTypes.STRING
+        },
+        fbUrl: {
+            type: DataTypes.STRING
+        }
     });
+
+    return Profile;
 };
