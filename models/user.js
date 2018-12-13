@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
                     msg: "Password must be a minimum of 5 characters"
                 }
             }
+        },
+        userRole: {
+            type: DataTypes.ENUM('basic', 'admin'),
+            defaultValue: 'basic'
         }
     });
 

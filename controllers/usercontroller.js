@@ -11,16 +11,18 @@ const User = sequelize.import('../models/user');
 
 // CREATE NEW USER
 router.post('/signup', function(req, res){
-  const firstName = req.body.user.firstName;
-  const lastName = req.body.user.lastName;
-  const username = req.body.user.username;
-  const pass = req.body.user.password;
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const username = req.body.username;
+  const pass = req.body.password;
+  const userRole = req.body.userRole;
 
   User.create({
     firstName: firstName,
     lastName: lastName,
     username: username,
-    password: bcrypt.hashSync(pass, 10)
+    password: bcrypt.hashSync(pass, 10),
+    userRole: userRole
   }).then(
     function createSuccess(user){
       let sessionToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
@@ -39,10 +41,10 @@ router.post('/signup', function(req, res){
 
 // SIGN IN FOR EXISTING USER
 router.post('/signin', function(req, res){
-  User.findOne( { where: { username: req.body.user.username } } ).then(
+  User.findOne( { where: { username: req.body.username } } ).then(
     function(user) {
       if (user) {
-        bcrypt.compare(req.body.user.password, user.password, function (err, matches) {
+        bcrypt.compare(req.body.password, user.password, function (err, matches) {
           if (matches) {
             let sessionToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24 });
             res.json({
@@ -63,26 +65,5 @@ router.post('/signin', function(req, res){
     }
   );
 });
-
-// router.get('/userlist/:id', (req,res)=>{
-//   Profile.findAll({where:{userId:req.params.id}})
-//   .then(profilelist => res.status(200).json(profilelist))
-// })
-
-// // CREATE USER PROFILE
-// router.put('/profile/:id', validateSession, (req, res) => {
-//   User.findOne({ where: { id: req.params.id }})
-//   .then(user => { user.createProfile ({
-//     userId: user.id,
-//     bio: req.body.bio,
-//     twHandle: req.body.twHandle,
-//     fbUrl: req.body.fbUrl
-//   })})
-//   .then(profile => res.json(profile))
-// })
-
-
-// UPDATE A USER
-// router.put('/:id', validateSession)
 
 module.exports = router;

@@ -18,8 +18,8 @@ router.post('/newthread', (req, res) => {
     if (!req.errors) {
         const postFromRequest = {
             userId: req.user.id,
-            text: req.body.post.text,
-            title: req.body.post.title
+            text: req.body.text,
+            title: req.body.title
         }; 
         Post.create(postFromRequest)
             .then(post => res.status(200).json(post))
@@ -31,8 +31,8 @@ router.post('/newthread', (req, res) => {
 
 router.put('/update/:id', (req, res) => {
     if (!req.errors) {
-        Post.update(req.body.post, { where: { id: req.params.id } })
-            .then(post => res.status(200).json(req.body.post))
+        Post.update(req.body, { where: { id: req.params.id } })
+            .then(post => res.status(200).json(req.body))
             .catch(err => res.json(req.errors));
     } else {
         res.status(500).json(req.errors);
@@ -42,7 +42,7 @@ router.put('/update/:id', (req, res) => {
 router.delete('/delete/:id', (req, res) => {
     if (!req.errors) {
         Post.destroy({ where: { id: req.params.id } })
-            .then(post => res.status(200).json(req.body.post))
+            .then(post => res.status(200).json(req.body))
             .catch(err => res.json(req.errors));
     } else {
         res.status(500).json(req.errors);
