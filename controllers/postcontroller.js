@@ -1,29 +1,28 @@
 const router = require('express').Router();
-// const Book = require('../db').import('../models/book');
+const Post = require('../db').import('../models/post')
+// Post.sync({force: true})
 
-router.get('/', (req, res) => {
-    Book.findAll()
-        .then(book => res.status(200).json(book))
+router.get('/getall', (req, res) => {
+    Post.findAll()
+        .then(post => res.status(200).json(post))
         .catch(err => res.status(500).json(err));
 });
 
 router.get('/:id', (req, res) => {
-    Book.findOne({ where: { id: req.params.id } })
-        .then(book => res.status(200).json(book))
+    Post.findOne({ where: { id: req.params.id } })
+        .then(post => res.status(200).json(post))
         .catch(err => res.status(500).json(err));
 });
 
-router.post('/', (req, res) => {
+router.post('/newthread', (req, res) => {
     if (!req.errors) {
-        const bookFromRequest = {
-            nameOfBook: req.body.nameOfBook,
-            author: req.body.author,
-            genre: req.body.genre,
-            pubYear: req.body.pubYear,
-            rating: req.body.rating
+        const postFromRequest = {
+            userId: req.user.id,
+            text: req.body.post.text,
+            title: req.body.post.title
         }; 
-        Book.create(bookFromRequest)
-            .then(book => res.status(200).json(book))
+        Post.create(postFromRequest)
+            .then(post => res.status(200).json(post))
             .catch(err => res.json(req.errors));
     } else {
         res.status(500).json(req.errors)
@@ -32,8 +31,8 @@ router.post('/', (req, res) => {
 
 router.put('/update/:id', (req, res) => {
     if (!req.errors) {
-        Book.update(req.body, { where: { id: req.params.id } })
-            .then(book => res.status(200).json(book))
+        Post.update(req.body.post, { where: { id: req.params.id } })
+            .then(post => res.status(200).json(req.body.post))
             .catch(err => res.json(req.errors));
     } else {
         res.status(500).json(req.errors);
@@ -42,8 +41,8 @@ router.put('/update/:id', (req, res) => {
 
 router.delete('/delete/:id', (req, res) => {
     if (!req.errors) {
-        Book.destroy({ where: { id: req.params.id } })
-            .then(book => res.status(200).json(book))
+        Post.destroy({ where: { id: req.params.id } })
+            .then(post => res.status(200).json(req.body.post))
             .catch(err => res.json(req.errors));
     } else {
         res.status(500).json(req.errors);

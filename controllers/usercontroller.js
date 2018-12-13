@@ -1,29 +1,33 @@
+// IMPORTS
 require('dotenv').config();
-var express = require('express');
-var router = express.Router();
-var sequelize = require('../db');
-var User = sequelize.import('../models/user');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
+const router = require('express').Router();
+const sequelize = require('../db');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = sequelize.import('../models/user');
+// const Profile = sequelize.import('../models/profile');
+// const validateSession = require('../middleware/validate-session');
 
-//Create user
+
+// CREATE NEW USER
 router.post('/signup', function(req, res){
-  var firstN = req.body.user.firstName;
-  var lastN = req.body.user.lastName;
-  var username = req.body.user.username;
-  var pass = req.body.user.password;
+  const firstName = req.body.user.firstName;
+  const lastName = req.body.user.lastName;
+  const username = req.body.user.username;
+  const pass = req.body.user.password;
+
   User.create({
-    firstName: firstN,
-    lastName: lastN,
+    firstName: firstName,
+    lastName: lastName,
     username: username,
     password: bcrypt.hashSync(pass, 10)
   }).then(
     function createSuccess(user){
-      var token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
+      let sessionToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24});
       res.json({
         user: user,
         message: 'created',
-        sessionToken: token
+        sessionToken: sessionToken
       });
     },
     function createError(err){
@@ -32,29 +36,53 @@ router.post('/signup', function(req, res){
   );
 });
 
+
+// SIGN IN FOR EXISTING USER
 router.post('/signin', function(req, res){
   User.findOne( { where: { username: req.body.user.username } } ).then(
     function(user) {
       if (user) {
-        bcrypt.compare(req.body.user.password, user.passwordhash, function (err, matches) {
+        bcrypt.compare(req.body.user.password, user.password, function (err, matches) {
           if (matches) {
-            var token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24 });
+            let sessionToken = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: 60*60*24 });
             res.json({
               user: user,
-              message: "Successfully authenticated!",
-              sessionToken: token
+              message: "Successfully Authenticated!",
+              sessionToken: sessionToken
             });
           } else {
-            res.status(502).send({ error: "Authentication failed" });
+            res.status(502).send({ error: "Authentication Failed" });
           }
         });
       } else {
-        res.status(500).send({ error: "Failed to authenticate" });
+        res.status(500).send({ error: "Internal Server Error" });
       }
     },
     function(err) {
-      res.status(501).send({ error: "you failed, yo" });
+      res.status(501).send({ error: "Not Implemented" });
     }
   );
 });
+
+// router.get('/userlist/:id', (req,res)=>{
+//   Profile.findAll({where:{userId:req.params.id}})
+//   .then(profilelist => res.status(200).json(profilelist))
+// })
+
+// // CREATE USER PROFILE
+// router.put('/profile/:id', validateSession, (req, res) => {
+//   User.findOne({ where: { id: req.params.id }})
+//   .then(user => { user.createProfile ({
+//     userId: user.id,
+//     bio: req.body.bio,
+//     twHandle: req.body.twHandle,
+//     fbUrl: req.body.fbUrl
+//   })})
+//   .then(profile => res.json(profile))
+// })
+
+
+// UPDATE A USER
+// router.put('/:id', validateSession)
+
 module.exports = router;
