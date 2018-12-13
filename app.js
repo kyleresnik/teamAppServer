@@ -11,7 +11,7 @@ const profile = require('./controllers/profilecontroller')
 const post = require('./controllers/postcontroller')
 
 //MIDDLEWARE
-sequelize.sync();
+sequelize.sync({force: true});
 app.use(bodyParser.json()); 
 
 //EXPOSED ROUTES
