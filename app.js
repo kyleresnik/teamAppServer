@@ -11,7 +11,7 @@ const profile = require('./controllers/profilecontroller')
 const post = require('./controllers/postcontroller')
 
 //MIDDLEWARE
-sequelize.sync(); // {force: true}
+sequelize.sync({ force: true }); // {force: true}
 app.use(bodyParser.json());
 app.use(require('./middleware/headers')); 
 
