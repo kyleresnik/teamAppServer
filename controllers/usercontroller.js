@@ -9,6 +9,12 @@ const User = sequelize.import('../models/user');
 // const validateSession = require('../middleware/validate-session');
 
 
+router.get('/getall', (req, res) => {
+  Post.findAll()
+      .then(post => res.status(200).json(post))
+      .catch(err => res.status(500).json(err));
+});
+
 // CREATE NEW USER
 router.post('/signup', function(req, res){
   const firstName = req.body.firstName;
