@@ -10,7 +10,7 @@ const User = sequelize.import('../models/user');
 
 
 router.get('/getall', (req, res) => {
-  Post.findAll()
+  User.findAll()
       .then(post => res.status(200).json(post))
       .catch(err => res.status(500).json(err));
 });
