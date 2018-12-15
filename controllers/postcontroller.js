@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Post = require('../db').import('../models/post')
+var validateSession = require('../middleware/validate-session')
 // Post.sync({force: true})
 
 router.get('/getall', (req, res) => {
@@ -14,7 +15,7 @@ router.get('/:id', (req, res) => {
         .catch(err => res.status(500).json(err));
 });
 
-router.post('/newthread', (req, res) => {
+router.post('/newthread', validateSession, (req, res) => {
     if (!req.errors) {
         const postFromRequest = {
             userId: req.user.id,
@@ -29,7 +30,7 @@ router.post('/newthread', (req, res) => {
     };
 });
 
-router.put('/update/:id', (req, res) => {
+router.put('/update/:id', validateSession, (req, res) => {
     if (!req.errors) {
         Post.update(req.body, { where: { id: req.params.id } })
             .then(post => res.status(200).json(req.body))
@@ -39,7 +40,7 @@ router.put('/update/:id', (req, res) => {
     };
 });
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', validateSession, (req, res) => {
     if (!req.errors) {
         Post.destroy({ where: { id: req.params.id } })
             .then(post => res.status(200).json(req.body))

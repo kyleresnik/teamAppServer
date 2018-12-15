@@ -17,10 +17,10 @@ app.use(require('./middleware/headers'));
 
 //EXPOSED ROUTES
 app.use('/user', user);
+app.use('/post', post);
 
 app.use(require('./middleware/validate-session'));
 app.use('/profile', profile);
-app.use('/post', post);
 
 app.listen(process.env.PORT, function(){
     console.log(`App is listening on ${process.env.PORT}`) 

@@ -15,6 +15,7 @@ router.get('/getall', (req, res) => {
       .catch(err => res.status(500).json(err));
 });
 
+// UPDATE NEEDS PASSWORD HASHING FUNCTIONALITY
 // UPDATE A USER
 router.put('/update/:id', (req, res) => {
   if (!req.errors) {
