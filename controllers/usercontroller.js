@@ -8,11 +8,22 @@ const User = sequelize.import('../models/user');
 // const Profile = sequelize.import('../models/profile');
 // const validateSession = require('../middleware/validate-session');
 
-
+// GET ALL USERS
 router.get('/getall', (req, res) => {
   User.findAll()
       .then(post => res.status(200).json(post))
       .catch(err => res.status(500).json(err));
+});
+
+// UPDATE A USER
+router.put('/update/:id', (req, res) => {
+  if (!req.errors) {
+      User.update(req.body, { where: { id: req.params.id } })
+          .then(user => res.status(200).json(req.body))
+          .catch(err => res.json(req.errors));
+  } else {
+      res.status(500).json(req.errors);
+  };
 });
 
 // CREATE NEW USER
@@ -70,6 +81,17 @@ router.post('/signin', function(req, res){
       res.status(501).send({ error: "Not Implemented" });
     }
   );
+});
+
+//DELETE A USER
+router.delete('/delete/:id', (req, res) => {
+  if (!req.errors) {
+      User.destroy({ where: { id: req.params.id } })
+          .then(user => res.status(200).json(req.body))
+          .catch(err => res.json(req.errors));
+  } else {
+      res.status(500).json(req.errors);
+  };
 });
 
 module.exports = router;
