@@ -19,6 +19,7 @@ router.get('/getall', (req, res) => {
 // UPDATE A USER
 router.put('/update/:id', (req, res) => {
   if (!req.errors) {
+      req.body.password = bcrypt.hashSync(req.body.password, 10)
       User.update(req.body, { where: { id: req.params.id } })
           .then(user => res.status(200).json(req.body))
           .catch(err => res.json(req.errors));
