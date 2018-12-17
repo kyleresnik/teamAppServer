@@ -22,6 +22,8 @@ app.use('/user', user);
 app.use('/post', post);
 app.use('/profile', profile);
 
+app.use(require('./middleware/validate-session'));
+
 app.listen(process.env.PORT, function(){
     console.log(`App is listening on ${process.env.PORT}`) 
 });
