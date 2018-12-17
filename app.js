@@ -17,9 +17,9 @@ app.use(require('./middleware/headers'));
 
 //EXPOSED ROUTES
 app.use('/user', user);
-app.use('/post', post);
 
-app.use(require('./middleware/validate-session'));
+//PROTECTED ROUTES
+app.use('/post', post);
 app.use('/profile', profile);
 
 app.listen(process.env.PORT, function(){

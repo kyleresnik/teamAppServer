@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Profile = require('../db').import('../models/profile')
+var validateSession = require('../middleware/validate-session')
 
 router.get('/getall', (req, res) => {
     Profile.findAll()
@@ -13,7 +14,7 @@ router.get('/:id', (req, res) => {
         .catch(err => res.status(500).json(err));
 });
 
-router.post('/newprofile', (req, res) => {
+router.post('/newprofile', validateSession, (req, res) => {
     if (!req.errors) {
         const profileFromRequest = {
          bio: req.body.bio,
@@ -28,7 +29,7 @@ router.post('/newprofile', (req, res) => {
     };
 });
 
-router.put('/update/:id', (req, res) => {
+router.put('/update/:id', validateSession, (req, res) => {
     if (!req.errors) {
         Profile.update(req.body, { where: { id: req.params.id } })
             .then(profile => res.status(200).json(req.body))
@@ -38,7 +39,7 @@ router.put('/update/:id', (req, res) => {
     };
 });
 
-router.delete('/delete/:id', (req, res) => {
+router.delete('/delete/:id', validateSession, (req, res) => {
     if (!req.errors) {
         Profile.destroy({ where: { id: req.params.id } })
             .then(profile => res.status(200).json(req.body))
